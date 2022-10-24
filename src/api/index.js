@@ -2,7 +2,7 @@
 // 注意：每个方法只负责请求一个URL地址
 import request from '@/utils/request.js'
 // 导出接口方法，为了在逻辑页面引入后调用
-export const registerAPI = () => {
+export const registerAPI = ({ username, password, repassword }) => {
   // 这里的是一个Promise对象（内部包含原生ajax请求）
   // return这个Promise对象到逻辑页面，去那边对Promise对象提取结果（.then(response...)）
   return request({
@@ -10,10 +10,29 @@ export const registerAPI = () => {
     // url: 'http://geek.itheima.net/v1_0/channels'
     url: '/api/reg',
     method: 'POST',
+    // axios传参包括paramas,data
+    // params的对象参数名和值，axios源码会把参数和值拼接在url?后面给后台（query查询字符串）
+    // data的对象参数名和值，axios源码会把参数和值拼接在请求体里（body参数）
     data: {
-      username: 'huapeng',
-      password: '123456',
-      repassword: '123456'
+      username,
+      password,
+      repassword
+    }
+  })
+}
+
+/**
+ * 登录接口
+ * @param {*} param0 { username: 用户名， password： 密码 }
+ * @returns Promise对象
+ */
+export const loginAPI = ({ username, password }) => {
+  return request({
+    url: '/api/login',
+    method: 'POST',
+    data: {
+      username,
+      password
     }
   })
 }
