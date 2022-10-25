@@ -7,15 +7,21 @@
 </template>
 <script>
 // import { registerAPI } from '@/api/index'
+// import { getUserInfoAPI } from '@/api'
 export default {
   name: 'App'
   // async created () {
   //   const res = await registerAPI()
   //   console.log(res)
   // }
+  // created () {
+  //   getUserInfoAPI().then(res => {
+  //     console.log(res)
+  //   })
+  // }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 * {
   margin: 0;
   padding: 0;

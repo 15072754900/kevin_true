@@ -4,6 +4,10 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    component: () => import('@/views/layout')
+  },
+  {
     path: '/reg',
     component: () => import('@/views/register')
     // webpack提供import函数来路由懒加载导入组件

@@ -1,5 +1,6 @@
 // 封装的是具体的接口请求方法
 // 注意：每个方法只负责请求一个URL地址
+import store from '@/store'
 import request from '@/utils/request.js'
 // 导出接口方法，为了在逻辑页面引入后调用
 export const registerAPI = ({ username, password, repassword }) => {
@@ -33,6 +34,18 @@ export const loginAPI = ({ username, password }) => {
     data: {
       username,
       password
+    }
+  })
+}
+
+export const getUserINfoAPI = () => {
+  return request({
+    url: '/my/userinfo',
+    // method不写默认就是'get'方式请求
+    // 传参给后台：params（查询字符串query），data（请求体body），header（请求头）
+    headers: {
+      // this.$store.state.token 这里this不是组件对象不能用this.$store拿到store对象
+      Authorization: store.state.token
     }
   })
 }

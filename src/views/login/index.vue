@@ -12,6 +12,9 @@
         <el-form-item prop="">
           <el-button type="primary" @click="loginFn">登录</el-button>
         </el-form-item>
+        <el-form-item prop="">
+          <el-link type="info" :underline="false" @click="$router.push('/reg')">去注册</el-link>
+        </el-form-item>
         <!-- <router-link to="/"></router-link> -->
       </el-form>
     </div>
@@ -24,6 +27,8 @@
 // import axios from 'axios'
 
 import { loginAPI } from '@/api'
+
+import { mapMutations } from 'vuex'
 
 // 好处：我可以直接把前端对象（带着同名的属性和前端收到的值）发给后台
 export default {
@@ -40,6 +45,7 @@ export default {
     //   }
     // }
     return {
+      ...mapMutations(['updateToken']),
       form: {
         username: '',
         password: ''
@@ -65,7 +71,8 @@ export default {
           console.log(res)
           if (res.code !== 0) return this.$message.error(res.message)
           this.$message.success(res.message)
-          this.$router.push('/login/demo')
+          this.updateToken(res.token)
+          this.$router.push('/')
         } else {
           return false // 阻止默认提交行为（表单下面红色提示会自动出现）
         }
@@ -115,7 +122,6 @@ border-radius: 5px;
     width: 80%;
   }
   .el-link {
-    margin-top: 3px;
     color: grey;
   }
 }

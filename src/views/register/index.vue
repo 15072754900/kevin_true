@@ -14,10 +14,8 @@
         </el-form-item>
         <el-form-item prop="">
           <el-button type="primary" @click="registerFn">注册</el-button>
-        </el-form-item><br>
-        <el-form-item prop="">
-          <el-link type="info" :underline="false" href="http://baidu.com">去登录</el-link>
         </el-form-item>
+        <el-link type="info" :underline="false" @click="$router.push('/login')">去登录</el-link>
         <!-- <router-link to="/"></router-link> -->
       </el-form>
     </div>
@@ -117,6 +115,7 @@ align-items: center;
 // margin-top: -150px;
 // 让绝对定位设置一个点位置，然后再偏移
 
+position: relative;
 width: 300px;
 height: 300px;
 background-color: white;
@@ -131,8 +130,10 @@ border-radius: 5px;
     width: 80%;
   }
   .el-link {
-    margin-top: 3px;
     color: grey;
+    position: absolute;
+    bottom: 20px;
+    right: 10px;
   }
 }
 .title-box{
