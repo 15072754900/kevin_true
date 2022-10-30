@@ -1,6 +1,5 @@
 // 封装的是具体的接口请求方法
 // 注意：每个方法只负责请求一个URL地址
-import store from '@/store'
 import request from '@/utils/request.js'
 // 导出接口方法，为了在逻辑页面引入后调用
 export const registerAPI = ({ username, password, repassword }) => {
@@ -38,14 +37,45 @@ export const loginAPI = ({ username, password }) => {
   })
 }
 
-export const getUserINfoAPI = () => {
+export const getUserInfoAPI = () => { // 接口方法
+  return request({
+    url: '/my/userinfo'
+    // method不写默认就是'get'方式请求
+    // 传参给后台：params（查询字符串query），data（请求体body），headers（请求头）
+    // 这里在拦截请求头中完成
+    // headers: {
+    //   // this.$store.state.token 这里this不是组件对象不能用this.$store拿到store对象
+    //   Authorization: store.state.token
+    // }
+  })
+}
+
+export const getMenusListAPI = () => {
+  return request({
+    url: '/my/menus'
+  })
+}
+
+export const updateUserInfoAPI = ({ id, username, nickname, email, user_pic }) => {
   return request({
     url: '/my/userinfo',
-    // method不写默认就是'get'方式请求
-    // 传参给后台：params（查询字符串query），data（请求体body），header（请求头）
-    headers: {
-      // this.$store.state.token 这里this不是组件对象不能用this.$store拿到store对象
-      Authorization: store.state.token
+    method: 'PUT',
+    data: {
+      id,
+      username,
+      nickname,
+      email,
+      user_pic
+    }
+  })
+}
+
+export const updateUserAvatar = (avatar) => {
+  return request({
+    url: 'my/update/avatar',
+    method: 'PATCH',
+    data: {
+      avatar
     }
   })
 }

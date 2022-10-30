@@ -19,6 +19,9 @@ export default {
   //     console.log(res)
   //   })
   // }
+  // created () {
+  //   this.$store.dispatch('getUserInfoActions')
+  // }
 }
 </script>
 <style lang="less" scoped>

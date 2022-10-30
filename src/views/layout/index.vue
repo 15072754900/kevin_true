@@ -22,65 +22,59 @@
         </el-header>
         <el-container>
             <el-aside width="200px">
+              <div class="user-box">
+                <img :src="user_pic" alt="" v-if="user_pic">
+                <img src="../../assets/images/logo.png" alt="" v-else>
+                <span>欢迎 {{nickname || username}}</span>
+              </div>
                 <el-row class="tac">
                 <el-col :span="12">
+                <!-- 侧边栏导航-菜单 -->
+                <!--
+                  el-menu:导航菜单
+                  default-active: 当前激活菜单的 index（el-submenu/el-menu-item的index值），对应菜单就有激活样式
+                  @open:sub-menu:激活的回调
+                  @close:submenu 关闭的回调
+                  active-text-color: 激活时的文字颜色，哪项index的值和default-active一致，就会被设置动态文字颜色
+
+                  子标签：
+                  如果有嵌套，先写el-submenu（里面嵌套template#title的设置当前展示内容，子用el-menu-items）
+
+                  属性值没有显示传值，默认为true（背）
+                 -->
                 <el-menu
-                    default-active="2"
                     class="el-menu-vertical-demo"
+                    :default-active="$route.path"
+                    unique-opened
                     @open="handleOpen"
                     @close="handleClose"
                     background-color="black"
                     text-color="#fff"
-                    active-text-color="#ffd04b">
-                    <el-menu-item index="1">
-                    <i class="el-icon-s-home"></i>
-                    <span slot="title">首页</span>
-                    </el-menu-item>
-                    <el-submenu index="2">
+                    active-text-color="#ffd04b"
+                    router>
+                    <template v-for="item in menus">
+                      <el-menu-item :index="item.indexPath" :key="item.indexPath" v-if="!item.children">
+                        <i :class='item.icon'></i>
+                        <span slot="title">{{item.title}}</span>
+                      </el-menu-item>
+                      <el-submenu :index="item.indexPath" :key="item.indexPath" v-else>
                         <template slot="title">
-                            <i class="el-icon-s-order"></i>
-                            <span>文章管理</span>
+                          <i :class="item.icon"></i>
+                          <span>{{item.title}}</span>
                         </template>
-                        <el-menu-item-group>
-                            <el-menu-item index="2-1">选项1</el-menu-item>
-                            <el-menu-item index="2-2">选项2</el-menu-item>
-                            <el-menu-item index="2-3">选项3</el-menu-item>
-                        </el-menu-item-group>
-                    </el-submenu>
-                    <el-submenu index="3">
-                        <template slot="title">
-                            <i class="el-icon-user-solid"></i>
-                            <span>个人中心</span>
-                        </template>
-                        <el-menu-item-group>
-                            <el-menu-item index="3-1"><i class="el-icon-s-operation"></i><span>基本资料</span></el-menu-item>
-                            <el-menu-item index="3-2"><i class="el-icon-camera-solid"></i><span>更换头像</span></el-menu-item>
-                            <el-menu-item index="3-3"><i class="el-icon-key"></i><span>重置密码</span></el-menu-item>
-                        </el-menu-item-group>
-                    </el-submenu>
+                        <el-menu-item v-for="obj in item.children" :index="obj.indexPath" :key="obj.indexPath">
+                            <i :class="obj.icon"></i>
+                            <span>{{obj.title}}</span>
+                        </el-menu-item>
+                      </el-submenu>
+                    </template>
                 </el-menu>
                 </el-col>
                 </el-row>
             </el-aside>
             <el-container>
             <el-main>
-                <el-form ref="form" :model="form" label-width="80px">
-                    <el-form-item style="margin-left: 22px  " label="登录名称">
-                        <el-input v-model="form.loginname"></el-input>
-                    </el-form-item>
-                </el-form>
-                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                    <el-form-item label="用户昵称" prop="name">
-                        <el-input v-model="ruleForm.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="用户邮箱" prop="email">
-                        <el-input v-model="ruleForm.email"></el-input>
-                    </el-form-item>
-                    <el-form-item style="margin-left: 200px width: 300px" >
-                        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-                        <el-button @click="resetForm('ruleForm')">重置</el-button>
-                    </el-form-item>
-                </el-form>
+                <router-view></router-view>
             </el-main>
             <el-footer><span>@2506434902qq.com  请联系华鹏先生添加相关文件</span></el-footer>
             </el-container>
@@ -88,17 +82,24 @@
     </el-container>
 </template>
 <script>
+import { mapState } from 'vuex'
+import { getMenusListAPI } from '@/api'
+
 export default {
   name: 'my-layout',
+  // 可以在每一次页面刷新进入的时候获取一次用户信息，也可以在全局路由守卫上添加
+  // created () {
+  //   this.$store.dispatch('getUserInfoActions')
+  // },
+
   data () {
     return {
+      menus: [],
       activeIndex: '1',
       activeIndex2: '1',
-      form: {
-        loginname: ''
-      },
       ruleForm: {
-        name: '',
+        username: '',
+        nickname: '',
         region: ''
       },
       rules: {
@@ -113,6 +114,10 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState({ user_pic: (state) => state.userInfo.user_pic, nickname: (state) => state.userInfo.nickname, username: (state) => state.userInfo.username })
+    // 这里的userInfo是对象传过来的，不能直接看到里面的内容，需要进行解构赋值才能传输，一般可以在getters里面采用定义的方式，再在mapgetters传输过来
+  },
   methods: {
     handleSelect (key, keyPath) {
       console.log(key, keyPath)
@@ -122,6 +127,12 @@ export default {
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath)
+    },
+    async getMenusListAPI () {
+      const res = await getMenusListAPI()
+      this.menus = res.data.data
+      // console.log(res)
+      console.log(this.menus)
     },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
@@ -145,10 +156,15 @@ export default {
         .then(() => {
         // TODO：执行退出登录的操作
           this.$store.commit('updateToken', '')
+          this.$store.commit('updateUserInfo', {})
           this.$router.push('/login')
         })
         .catch((err) => err)
     }
+  },
+  created () {
+    // 请求侧边栏的数据
+    this.getMenusListAPI()
   }
 }
 </script>
@@ -186,8 +202,34 @@ background-color: black;
 color: #333;
 text-align: center;
 line-height: 200px;
+.user-box{
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  user-select: none;
+  img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #fff;
+    margin-right: 15px;
+    object-fit: cover;
+  }
+  span {
+    color: white;
+    font-size: 12px;
+  }
+}
 .el-menu {
     border-right: 0;
+    .el-submenu{
+        .el-menu-item{
+          font-size: 12px;
+      }
+    }
 }
 .el-menu-vertical-demo{
     width: 200px;

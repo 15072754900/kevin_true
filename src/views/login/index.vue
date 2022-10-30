@@ -68,7 +68,7 @@ export default {
       this.$refs.form.validate(async valid => {
         if (valid) {
           const { data: res } = await loginAPI(this.form)
-          console.log(res)
+          // console.log(res)
           if (res.code !== 0) return this.$message.error(res.message)
           this.$message.success(res.message)
           this.updateToken(res.token)
