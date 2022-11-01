@@ -79,3 +79,59 @@ export const updateUserAvatar = (avatar) => {
     }
   })
 }
+
+/**
+ * 更新用户密码
+ * @param {*} param0 {oldpass：旧密码，checkPass：确认密码，pass：新密码}
+ * @returns Promise对象
+ */
+export const updatePwdAPI = ({ old_pwd, new_pwd, re_pwd }) => {
+  return request({
+    url: 'my/updatepwd',
+    method: 'PATCH',
+    data: {
+      new_pwd,
+      re_pwd,
+      old_pwd
+    }
+  })
+}
+
+export const getArtCateListAPI = () => {
+  return request({
+    url: 'my/cate/list'
+  })
+}
+
+export const saveArtCateAPI = ({ cate_name, cate_alias }) => {
+  return request({
+    url: 'my/cate/add',
+    method: 'POST',
+    data: {
+      cate_name,
+      cate_alias
+    }
+  })
+}
+
+export const updteArtCateAPI = ({ id, cate_name, cate_alias }) => {
+  return request({
+    url: 'my/cate/info',
+    method: 'PUT',
+    data: {
+      id,
+      cate_name,
+      cate_alias
+    }
+  })
+}
+
+export const deleteArtCateAPI = (id) => {
+  return request({
+    url: 'my/cate/del',
+    method: 'DELETE',
+    params: {
+      id
+    }
+  })
+}

@@ -76,7 +76,7 @@
             <el-main>
                 <router-view></router-view>
             </el-main>
-            <el-footer><span>@2506434902qq.com  请联系华鹏先生添加相关文件</span></el-footer>
+            <el-footer><span>2506434902@qq.com  请联系华鹏先生添加相关文件</span></el-footer>
             </el-container>
         </el-container>
     </el-container>
@@ -243,8 +243,8 @@ line-height: 200px;
 .el-main {
 background-color: #E9EEF3;
 color: #333;
-text-align: center;
-line-height: 160px;
+// text-align: center;
+// line-height: 160px;
 }
 
 body > .el-container {
